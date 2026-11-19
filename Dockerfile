@@ -74,6 +74,7 @@ RUN mkdir -p /var/www/ZerpPackages && \
     git clone --depth 1 https://github.com/zerp-pk/webhook
 
 # Clone Trexfer ERP core AFTER modules exist
+# Cache bust: ef5da2b
 RUN git clone --depth 1 https://github.com/RehmaanMusic/trexfer-erp-core .
 
 # Create .env from example
