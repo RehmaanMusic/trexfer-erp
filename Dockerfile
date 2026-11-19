@@ -89,6 +89,7 @@ RUN COMPOSER_ALLOW_SUPERUSER=1 composer install \
     --ignore-platform-reqs
 
 # Install Node dependencies and build frontend
+ENV NODE_OPTIONS="--max-old-space-size=460"
 RUN npm install --legacy-peer-deps && npm run build
 
 # Set permissions
