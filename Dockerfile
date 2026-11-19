@@ -74,8 +74,8 @@ RUN mkdir -p /var/www/ZerpPackages && \
     git clone --depth 1 https://github.com/zerp-pk/twilio && \
     git clone --depth 1 https://github.com/zerp-pk/webhook
 
-# Copy env file
-COPY .env.render /var/www/html/.env
+# Create basic .env file (will be overridden by start.sh)
+RUN cp .env.example .env
 
 # Install PHP dependencies
 RUN COMPOSER_ALLOW_SUPERUSER=1 composer install \
