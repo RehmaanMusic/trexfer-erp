@@ -89,7 +89,7 @@ RUN COMPOSER_ALLOW_SUPERUSER=1 composer install \
     --ignore-platform-reqs
 
 # Install Node dependencies and build frontend
-RUN npm ci && npm run build
+RUN npm install --legacy-peer-deps && npm run build
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html \
