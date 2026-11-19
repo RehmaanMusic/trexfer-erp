@@ -36,8 +36,8 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Set working directory
 WORKDIR /var/www/html
 
-# Clone Zerp main repo
-RUN git clone --depth 1 https://github.com/zerp-pk/zerp .
+# Clone Trexfer ERP (forked from Zerp)
+RUN git clone --depth 1 https://github.com/RehmaanMusic/trexfer-erp-core .
 
 # Clone all ZerpPackages modules
 RUN mkdir -p /var/www/ZerpPackages && \
