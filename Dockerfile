@@ -38,10 +38,7 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Set working directory
 WORKDIR /var/www/html
 
-# Clone Trexfer ERP core (v2)
-RUN git clone --depth 1 https://github.com/RehmaanMusic/trexfer-erp-core .
-
-# Clone all ZerpPackages modules
+# Clone all ZerpPackages modules FIRST (before app code)
 RUN mkdir -p /var/www/ZerpPackages && \
     cd /var/www/ZerpPackages && \
     git clone --depth 1 https://github.com/zerp-pk/account && \
@@ -75,6 +72,9 @@ RUN mkdir -p /var/www/ZerpPackages && \
     git clone --depth 1 https://github.com/zerp-pk/training && \
     git clone --depth 1 https://github.com/zerp-pk/twilio && \
     git clone --depth 1 https://github.com/zerp-pk/webhook
+
+# Clone Trexfer ERP core AFTER modules exist
+RUN git clone --depth 1 https://github.com/RehmaanMusic/trexfer-erp-core .
 
 # Create .env from example
 RUN cp .env.example .env
