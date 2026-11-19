@@ -3,8 +3,6 @@ FROM php:8.2-fpm-alpine
 # Install system dependencies
 RUN apk add --no-cache \
     nginx \
-    nodejs \
-    npm \
     git \
     curl \
     unzip \
@@ -88,9 +86,7 @@ RUN COMPOSER_ALLOW_SUPERUSER=1 composer install \
     --no-scripts \
     --ignore-platform-reqs
 
-# Install Node dependencies and build frontend
-ENV NODE_OPTIONS="--max-old-space-size=460"
-RUN npm install --legacy-peer-deps && npm run build
+# Frontend already pre-built and committed to repo - skip npm build
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html \
