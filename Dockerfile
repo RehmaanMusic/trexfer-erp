@@ -1,42 +1,40 @@
-FROM php:8.3-fpm-alpine
+FROM ubuntu:22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=Asia/Karachi
 
 # Install system dependencies
-RUN apk add --no-cache \
+RUN apt-get update && apt-get install -y \
     nginx \
-    nodejs \
-    npm \
     git \
     curl \
-    libpng-dev \
-    libjpeg-turbo-dev \
-    freetype-dev \
-    libzip-dev \
-    icu-dev \
-    oniguruma-dev \
-    libsodium-dev \
-    supervisor
-
-# Install PHP extensions
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install -j$(nproc) \
-        pdo_mysql \
-        mbstring \
-        exif \
-        pcntl \
-        bcmath \
-        gd \
-        zip \
-        intl \
-        sodium \
-        opcache
+    unzip \
+    supervisor \
+    php8.1 \
+    php8.1-fpm \
+    php8.1-mysql \
+    php8.1-mbstring \
+    php8.1-xml \
+    php8.1-bcmath \
+    php8.1-curl \
+    php8.1-gd \
+    php8.1-zip \
+    php8.1-intl \
+    php8.1-sodium \
+    php8.1-opcache \
+    php8.1-pcntl \
+    php8.1-exif \
+    nodejs \
+    npm \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Set working directory
 WORKDIR /var/www/html
 
-# Clone Trexfer ERP (forked from Zerp)
+# Clone Trexfer ERP core
 RUN git clone --depth 1 https://github.com/RehmaanMusic/trexfer-erp-core .
 
 # Clone all ZerpPackages modules
@@ -74,7 +72,7 @@ RUN mkdir -p /var/www/ZerpPackages && \
     git clone --depth 1 https://github.com/zerp-pk/twilio && \
     git clone --depth 1 https://github.com/zerp-pk/webhook
 
-# Create basic .env file (will be overridden by start.sh)
+# Create .env from example
 RUN cp .env.example .env
 
 # Install PHP dependencies
@@ -92,13 +90,9 @@ RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html/storage \
     && chmod -R 755 /var/www/html/bootstrap/cache
 
-# Copy nginx config
-COPY nginx.conf /etc/nginx/nginx.conf
-
-# Copy supervisor config
-COPY supervisord.conf /etc/supervisord.conf
-
-# Copy startup script
+# Copy configs
+COPY nginx.conf /etc/nginx/sites-available/default
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY start.sh /start.sh
 RUN chmod +x /start.sh
 
